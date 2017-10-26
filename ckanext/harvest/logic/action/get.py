@@ -75,7 +75,6 @@ def harvest_source_show_status(context, data_dict):
 
     p.toolkit.check_access('harvest_source_show_status', context, data_dict)
 
-
     model = context.get('model')
 
     source = harvest_model.HarvestSource.get(data_dict['id'])
@@ -106,13 +105,11 @@ def harvest_source_show_status(context, data_dict):
     out['last_job'] = harvest_job_dictize(last_job, context)
 
     # Overall statistics
-    packages = model.Session.query(model.Package) \
-            .join(harvest_model.HarvestObject) \
-            .filter(harvest_model.HarvestObject.harvest_source_id==source.id) \
-            .filter(harvest_model.HarvestObject.current==True) \
-            .filter(model.Package.state==u'active') \
-            .filter(model.Package.private==False)
-    out['total_datasets'] = packages.count()
+    fq = 'harvest_source_id:"{0}"'.format(source.id)
+    search_dict = {'fq': fq}
+    context = {'model': model, 'session': model.Session}
+    result = logic.get_action('package_search')(context, search_dict)
+    out['total_datasets'] = result.get('count', 0)
 
     return out
 
