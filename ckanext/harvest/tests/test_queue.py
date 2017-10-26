@@ -183,11 +183,6 @@ class TestHarvestQueue(object):
             context,
             {'source_id':harvest_source['id']}
         )
-        # Refresh the index for this source to update the status object
-        logic.get_action('harvest_source_reindex')(
-            context,
-            {'id': harvest_source['id']}
-        )
 
         harvest_job = logic.get_action('harvest_job_show')(
             context,
@@ -203,7 +198,6 @@ class TestHarvestQueue(object):
         )
 
         assert_equal(harvest_source_dict['status']['last_job']['stats'], {'added': 3, 'updated': 0, 'not modified': 0, 'errored': 0, 'deleted': 0})
-        assert_equal(harvest_source_dict['status']['total_datasets'], 3)
         assert_equal(harvest_source_dict['status']['job_count'], 1)
 
 
@@ -266,7 +260,6 @@ class TestHarvestQueue(object):
         )
 
         assert_equal(harvest_source_dict['status']['last_job']['stats'], {'added': 0, 'updated': 2, 'not modified': 0, 'errored': 0, 'deleted': 1})
-        assert_equal(harvest_source_dict['status']['total_datasets'], 2)
         assert_equal(harvest_source_dict['status']['job_count'], 2)
 
 
