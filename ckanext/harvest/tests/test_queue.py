@@ -183,6 +183,11 @@ class TestHarvestQueue(object):
             context,
             {'source_id':harvest_source['id']}
         )
+        # Refresh the index for this source to update the status object
+        logic.get_action('harvest_source_reindex')(
+            context,
+            {'id': harvest_source['id']}
+        )
 
         harvest_job = logic.get_action('harvest_job_show')(
             context,
